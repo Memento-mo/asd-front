@@ -5,27 +5,32 @@
 </template>
 
 <script>
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({
-  setup () {
+  setup() {
+    function setViewPort() {
+      let viewheight = window.innerHeight;
+      let viewwidth = window.innerWidth;
 
-    function setViewPort () {
-      let viewheight = window.innerHeight
-      let viewwidth = window.innerWidth
-      console.log(viewwidth)
-      let viewport = document.querySelector("meta[name=viewport]")
-      viewport.setAttribute("content", "height=" + viewheight + "px, width=" + viewwidth + "px, initial-scale=1.0")
+      let viewport = document.querySelector("meta[name=viewport]");
+      viewport.setAttribute(
+        "content",
+        "height=" +
+          viewheight +
+          "px, width=" +
+          viewwidth +
+          "px, initial-scale=1.0"
+      );
     }
 
     onMounted(() => {
-      setViewPort()
-    })
-    return {
+      setViewPort();
+    });
 
-    }
-  }
-})
+    return {};
+  },
+});
 </script>
 
 <style lang="stylus" module>

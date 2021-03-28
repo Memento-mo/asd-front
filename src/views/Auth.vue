@@ -1,70 +1,33 @@
 <template>
-  <header>
-    <h1>Молодежный отдел цо приветствует тебя!</h1>
-  </header>
+  <Header />
 
-  <main :class="$style.main">
-    <div>
-      <Man />
-    </div>
+  <Main />
 
-    <div :class="$style['main-description']">
-      Зарегистрируйся и участвуй в викторине!
-    </div>
+  <Footer />
 
-    <ElForm :class="$style.form">
-      <ElFormItem>
-        <ElInput placeholder="Введите имя и фамилию" />
-      </ElFormItem>
-
-      <ElFormItem>
-        <ElInput placeholder="Введите email" />
-      </ElFormItem>
-    </ElForm>
-  </main>
-
-
-  <footer>
-
-  </footer>
-
-  <div :class="$style.bg"/>
+  <div :class="$style.bg" />
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/runtime-core"
-import { ElForm, ElFormItem , ElInput } from 'element-plus'
+import { defineComponent } from "@vue/runtime-core";
 
-import Man from '../icons/Man.vue'
+import Header from "../components/Auth/Header.vue";
+import Main from "../components/Auth/Main.vue";
+import Footer from "../components/Auth/Footer.vue";
 
 export default defineComponent({
   components: {
-    Man,
-    ElForm,
-    ElFormItem,
-    ElInput
+    Header,
+    Main,
+    Footer,
   },
-  setup () {
-    return {
-
-    }
-  }
-})
+  setup() {
+    return {};
+  },
+});
 </script>
 
 <style lang="stylus" module>
-header {
-  h1 {
-    font-weight 700
-    font-size 1.6rem
-    text-transform uppercase
-    text-align center
-    line-height 22px
-    color #fff
-    margin-top 34px
-  }
-}
-
 .bg {
   position absolute
   background-color #6B1DFF
@@ -86,20 +49,5 @@ header {
     // height 500px
   }
 
-}
-
-.main {
-  margin-top 14px
-
-  &-description {
-    color #fff
-    font-size 14px
-    line-height 16px
-    margin-top 20px
-  }
-
-  .form {
-    margin-top 20px
-  }
 }
 </style>

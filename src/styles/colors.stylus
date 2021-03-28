@@ -1,0 +1,7 @@
+:root {
+  --primary #6B1DFF
+  --secondary #FFB61D
+
+  --grey-light-1 #A99D9D
+  --grey-light-2 #CCC7C7
+}

@@ -1,5 +1,16 @@
+@import './layout.stylus';
+@import './colors.stylus';
+
+* {
+  font-family 'Roboto', sans-serif!important
+  backface-visibility hidden
+}
+
+:root {
+  --transition 0.3s ease
+}
+
 #app {
-  font-family Roboto, sans-serif
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
   text-align center
@@ -7,4 +18,56 @@
   overflow hidden
   position relative
   height 100vh
+}
+
+.el-input__inner:focus {
+  border-color var(--secondary)!important
+}
+
+.el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+  background-color var(--secondary)
+  border-color var(--secondary)
+}
+
+.el-checkbox__input.is-checked+.el-checkbox__label {
+  color var(--secondary)
+}
+
+.el-checkbox__input.is-focus .el-checkbox__inner, .el-checkbox__inner:hover {
+  border-color var(--secondary)  
+}
+
+.el-button--success:focus, .el-button--success:hover {
+  background var(--primary)
+  border-color var(--primary)
+}
+
+.avatar-uploader .el-upload {
+  border 1px dashed #C0C4CC
+  border-radius 6px
+  cursor pointer
+  position relative
+  overflow hidden
+  height 60px
+  width 60px
+  display flex
+  justify-content center
+  align-items center
+  margin 0 auto
+  transition 0.3s ease
+}
+.avatar-uploader .el-upload:hover {
+  border-color var(--secondary)
+}
+.avatar-uploader-icon {
+  height 20px
+  width 20px
+  color #8c939d
+  line-height 178px
+  text-align center
+}
+.avatar {
+  width 178px
+  height 178px
+  display block
 }

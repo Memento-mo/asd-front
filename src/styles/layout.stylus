@@ -1,0 +1,38 @@
+.row {
+  display flex
+}
+
+.align-items {
+  &-center {
+    align-items center  
+  }
+
+  &-end {
+    align-items flex-end
+  }
+  &-start {
+    align-items flex-start
+  }
+}
+
+.justify-content {
+  &-center {
+    justify-content center
+  }
+
+  &-between {
+    justify-content space-between
+  }
+
+  &-around {
+    justify-content space-around
+  }
+
+  &-end {
+    justify-content flex-end
+  }
+
+  &-start {
+    justify-content flex-start
+  }
+}

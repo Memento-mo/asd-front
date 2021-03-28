@@ -29,13 +29,6 @@ module.exports = {
       'singleline': 'never',
       'multiline': 'always'
     }],
-    'vue/max-attributes-per-line': ['error', {
-      'singleline': 1,
-      'multiline': {
-        'max': 1,
-        'allowFirstLine': false
-      }
-    }],
     'vue/html-indent': ['error', 2, {
       'attribute': 1,
       'baseIndent': 1,
@@ -50,15 +43,6 @@ module.exports = {
     }],
     'vue/html-end-tags': 'error',
     'vue/html-quotes': ['error', 'double', { 'avoidEscape': false }],
-    'vue/html-self-closing': ['error', {
-      'html': {
-        'void': 'never',
-        'normal': 'always',
-        'component': 'always'
-      },
-      'svg': 'always',
-      'math': 'always'
-    }],
     'vue/attributes-order': ['error', {
       'order': [
         'DEFINITION',
