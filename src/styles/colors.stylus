@@ -4,4 +4,6 @@
 
   --grey-light-1 #A99D9D
   --grey-light-2 #CCC7C7
+
+  --grey-dark-1 #333
 }

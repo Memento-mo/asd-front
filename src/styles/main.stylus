@@ -71,3 +71,65 @@
   height 178px
   display block
 }
+
+.auth-button {
+  text-transform uppercase
+  font-weight 400
+  font-size 1.3rem
+
+  padding: 1.2rem 3.7rem
+
+  background-color var(--primary)
+  border-color var(--primary)
+
+  transition var(--transition)
+
+  &:hover {
+    opacity 0.8
+  }
+}
+
+.signIn a {
+  text-decoration none
+  display block
+  color var(--secondary)
+  font-size 14px
+  font-weight 500
+  width 10rem
+  margin 0 auto
+  border-radius 0.4rem
+  margin-top 1rem
+  padding 1rem
+  cursor pointer
+  transition var(--transition)
+
+  &:hover {
+    opacity 0.7
+  }
+}
+
+.component-fade-enter-active, .component-fade-leave-active {
+  opacity 1
+  transition: opacity .3s ease;
+}
+.component-fade-enter, .component-fade-leave-to
+/* .component-fade-leave-active до версии 2.1.8 */ {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  animation: fade-in .3s forwards;
+}
+
+.fade-leave-active {
+  animation: fade-in .3s forwards reverse;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
