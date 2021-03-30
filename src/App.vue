@@ -4,7 +4,10 @@
 
     <Container>
       <template v-slot:icon>
-        <ManIcon />
+        <transition name="fade" mode="out-in">
+          <QuestionIcon key="question" v-if="isQuestionsPage" />
+          <ManIcon key="auth" v-else-if="isAuthPages" />
+        </transition>
       </template>
 
       <router-view v-slot="{ Component }">
@@ -18,22 +21,26 @@
 </template>
 
 <script>
-import { defineComponent, onMounted } from "vue";
+import { computed, defineComponent, onMounted } from "vue";
 
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 import Header from "./components/Header.vue";
 import Container from "./components/Container.vue";
+
 import ManIcon from "./icons/ManIcon.vue";
+import QuestionIcon from "./icons/QuestionIcon.vue";
 
 export default defineComponent({
   components: {
     Header,
     Container,
     ManIcon,
+    QuestionIcon,
   },
   setup() {
     const router = useRouter();
+    const route = useRoute();
 
     function setViewPort() {
       let viewheight = window.innerHeight;
@@ -51,15 +58,24 @@ export default defineComponent({
     }
 
     function redirect() {
-      router.replace({ name: "auth" });
+      router.replace({ name: "questions" });
     }
+
+    const isQuestionsPage = computed(() => route.name === "questions");
+
+    const isAuthPages = computed(
+      () => route.name === "auth" || route.name === "login"
+    );
 
     onMounted(() => {
       setViewPort();
       redirect();
     });
 
-    return {};
+    return {
+      isQuestionsPage,
+      isAuthPages,
+    };
   },
 });
 </script>

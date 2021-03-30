@@ -1,17 +1,17 @@
 <template>
   <div>
-    <Main />
+    <QuestionsMain />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
-import Main from "../components/Questions/Main.vue";
+import QuestionsMain from "../components/Questions/QuestionsMain.vue";
 
 export default defineComponent({
   components: {
-    Main,
+    QuestionsMain,
   },
 });
 </script>

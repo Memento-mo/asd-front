@@ -16,7 +16,9 @@
         />
       </ElFormItem>
 
-      <ElButton type="success" class="auth-button"> Войти </ElButton>
+      <ElButton type="success" class="auth-button" @click="handlerAuth">
+        Войти
+      </ElButton>
 
       <div class="signIn">
         <router-link to="/auth">Регистрация</router-link>
@@ -33,6 +35,7 @@ import Card from "../Card/Card.vue";
 import Container from "../Container.vue";
 
 import { ElForm, ElFormItem, ElInput, ElButton } from "element-plus";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   components: {
@@ -44,12 +47,19 @@ export default defineComponent({
     ElButton,
   },
   setup() {
+    const router = useRouter();
+
     const form = reactive({
       email: "",
     });
 
+    function handlerAuth() {
+      router.replace({ name: "questions" });
+    }
+
     return {
       form,
+      handlerAuth,
     };
   },
 });

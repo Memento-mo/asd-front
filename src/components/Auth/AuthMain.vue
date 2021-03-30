@@ -39,7 +39,9 @@
         </ElCheckbox>
       </ElFormItem>
 
-      <ElButton type="success" class="auth-button"> Регистрация </ElButton>
+      <ElButton type="success" class="auth-button" @click="handlerAuth">
+        Регистрация
+      </ElButton>
       <div class="signIn">
         <router-link to="/login">Войти</router-link>
       </div>
@@ -57,6 +59,7 @@ import {
   ElUpload,
   ElCheckbox,
 } from "element-plus";
+import { useRouter } from "vue-router";
 
 import PhotoIcon from "../../icons/PhotoIcon.vue";
 
@@ -73,6 +76,8 @@ export default defineComponent({
     Card,
   },
   setup() {
+    const router = useRouter();
+
     const form = reactive({
       email: "",
       fullName: "",
@@ -81,9 +86,14 @@ export default defineComponent({
 
     const imageUrl = "";
 
+    function handlerAuth() {
+      router.replace({ name: "questions" });
+    }
+
     return {
       form,
       imageUrl,
+      handlerAuth,
     };
   },
 });

@@ -7,7 +7,7 @@
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core";
 
-import Main from "../components/Auth/Main.vue";
+import Main from "../components/Auth/AuthMain.vue";
 
 export default defineComponent({
   components: {
