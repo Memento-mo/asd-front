@@ -3,6 +3,8 @@
     <div>
       <h1>{{ title }}</h1>
     </div>
+
+    <router-link to="/statistic">Статистика</router-link>
   </header>
 </template>
 

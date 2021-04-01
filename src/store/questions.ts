@@ -32,8 +32,8 @@ export default {
     fetchQuestions: ({ commit }: VuexControl<State>): void => {
       // получить вопросы
       const questions: Array<Question> = [
-        { id: 1, text: "Сколько людей младше 25 лет?" },
-        { id: 2, text: "Как зовут человека кто не съел утренний рулет?" },
+        { id: 1, text: "Кто самый веселый человек?" },
+        { id: 2, text: "Сфоткай человека кто не съел утренний рулет?" },
         { id: 3, text: "Кто умеет играть на гитаре?" },
       ];
 

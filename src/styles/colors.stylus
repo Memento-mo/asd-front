@@ -6,4 +6,6 @@
   --grey-light-2 #CCC7C7
 
   --grey-dark-1 #333
+
+  --text rgb(44, 62, 80)
 }

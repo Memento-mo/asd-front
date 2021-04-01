@@ -14,6 +14,15 @@
         />
       </ElFormItem>
 
+      <ElFormItem :class="$style.upload">
+        <h3>Сделай селфи с этим человеком</h3>
+
+        <ElUpload action="" class="avatar-uploader">
+          <img class="avatar" :src="imageUrl" v-if="imageUrl" />
+          <PhotoIcon class="avatar-uploader-icon" />
+        </ElUpload>
+      </ElFormItem>
+
       <ElButton type="success" class="auth-button" @click="handlerSendAnswer">
         Отправить
       </ElButton>
@@ -39,12 +48,15 @@ import { useStore } from "vuex";
 
 import Card from "../Card/Card.vue";
 
+import PhotoIcon from "../../icons/PhotoIcon.vue";
+
 export default defineComponent({
   components: {
     ElForm,
     ElFormItem,
     ElInput,
     Card,
+    PhotoIcon,
   },
   setup() {
     const store = useStore();
@@ -52,6 +64,8 @@ export default defineComponent({
     const form = reactive({
       answer: "",
     });
+
+    const imageUrl = ref("");
 
     const numberQuestion = ref(0);
 
@@ -103,7 +117,20 @@ export default defineComponent({
       form,
       handlerSendAnswer,
       currentQuestion,
+      imageUrl,
     };
   },
 });
 </script>
+
+<style lang="stylus" module>
+.upload {
+  h3 {
+    font-weight 500
+    color #333
+    font-size 1.4rem
+    margin-bottom 1.5rem
+    line-height 1.6rem
+  }
+}
+</style>

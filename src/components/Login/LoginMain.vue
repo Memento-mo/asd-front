@@ -32,7 +32,7 @@ import { defineComponent, reactive } from "vue";
 
 import Card from "../Card/Card.vue";
 
-import Container from "../Container.vue";
+import Container from "../ui/Container.vue";
 
 import { ElForm, ElFormItem, ElInput, ElButton } from "element-plus";
 import { useRouter } from "vue-router";
