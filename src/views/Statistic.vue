@@ -6,6 +6,7 @@
       <Card
         :key="index"
         :userId="account.email"
+        :account="account"
         v-for="(account, index) in accounts"
       />
     </div>
@@ -55,7 +56,7 @@ export default defineComponent({
   &-cards {
     margin-top 10px
     display grid
-    grid-template-columns: repeat(auto-fit, minmax(240px, 350px));
+    grid-template-columns repeat(auto-fit, minmax(240px, 350px))
     grid-column-gap 2rem
     grid-row-gap 2rem
   }

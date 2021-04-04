@@ -1,18 +1,5 @@
 import { VuexControl } from "@/types/common_types";
-
-interface Answer {
-  /**
-   * @description id вопроса
-   */
-  id: string;
-  answer: string;
-}
-
-interface Account {
-  id: string;
-  email: string;
-  answers: Array<Answer>;
-}
+import { Account } from "@/types/accounts";
 
 interface State {
   accounts: Array<Account>;
@@ -30,31 +17,39 @@ export default {
   },
   getters: {
     accounts: ({ accounts }: State): Array<Account> => accounts,
+    account: ({ accounts }: State) => (id: string): Account | undefined =>
+      accounts.find((account) => account.email === id),
   },
   actions: {
-    fetchAccounts: ({ commit }: VuexControl<State>): void => {
-      // запрос пользователей
-      const accounts: Array<Account> = [
-        {
-          id: "er43r2edwd",
-          email: "gpologov@gmail.com",
-          answers: [
-            { id: "1", answer: "Саша Луговоской" },
-            { id: "2", answer: "Андрей Луговской" },
-          ],
-        },
-        {
-          id: "er43r2edwd",
-          email: "glebpologov@mail.ru",
-          answers: [
-            { id: "1", answer: "Саша Луговоской" },
-            { id: "2", answer: "Андрей Луговской" },
-            { id: "3", answer: "Миша Барышев" },
-          ],
-        },
-      ];
+    fetchAccounts: ({ commit }: VuexControl<State>): Promise<void> => {
+      return new Promise((resolve, reject): void => {
+        // запрос пользователей
+        const accounts: Array<Account> = [
+          {
+            id: "er43r2edwd",
+            email: "gpologov@gmail.com",
+            full_name: "Глеб Пологов",
+            answers: [
+              { id: "1", answer: "Саша Луговоской" },
+              { id: "2", answer: "Андрей Луговской" },
+            ],
+          },
+          {
+            id: "dfs34r",
+            email: "glebpologov@mail.ru",
+            full_name: "Андрей Луговской",
+            answers: [
+              { id: "2", answer: "Андрей Луговской" },
+              { id: "3", answer: "Миша Барышев" },
+            ],
+          },
+        ];
 
-      commit("SET_ACCOUNTS", accounts);
+        setTimeout(() => {
+          resolve();
+          commit("SET_ACCOUNTS", accounts);
+        }, 100);
+      });
     },
   },
 };

@@ -4,20 +4,35 @@
       <h1>{{ title }}</h1>
     </div>
 
-    <router-link to="/statistic">Статистика</router-link>
+    <transition name="fade" mode="in-out">
+      <ElCard :class="$style.card" v-show="isMainPage">
+        <div class="row justify-content-center">
+          <router-link to="/auth">
+            <ElButton type="success"> Регистрация </ElButton>
+          </router-link>
+          <router-link to="/login">
+            <ElButton type="success"> Войти </ElButton>
+          </router-link>
+        </div>
+        <div :class="$style['card-statistic']">
+          <router-link to="/statistic">Статистика</router-link>
+        </div>
+      </ElCard>
+    </transition>
   </header>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, watch } from "vue";
 
-import { ElButton } from "element-plus";
+import { ElButton, ElCard } from "element-plus";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 
 export default defineComponent({
   components: {
     ElButton,
+    ElCard,
   },
   setup() {
     const store = useStore();
@@ -27,6 +42,8 @@ export default defineComponent({
     const currentNumber = computed(
       () => store.getters["questions/numberQuestion"]
     );
+
+    const isMainPage = computed(() => route.name === "main");
 
     watch(
       () => [route.name, currentNumber.value],
@@ -52,6 +69,7 @@ export default defineComponent({
       init();
     });
     return {
+      isMainPage,
       title,
     };
   },
@@ -67,6 +85,25 @@ header {
     text-align center
     line-height 22px
     color #fff
+  }
+}
+
+.card {
+  margin-top 2rem
+
+  a {
+    text-decoration none
+    color #fff
+    margin-right 1rem
+  }
+
+  &-statistic {
+    margin-top 1rem
+    a {
+      font-weight 500
+      font-size 1.4rem
+      color var(--secondary)
+    }
   }
 }
 </style>

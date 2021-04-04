@@ -45,7 +45,13 @@ html {
   border-color var(--secondary)  
 }
 
+.el-button--success, .el-button--success:hover {
+  background var(--primary)
+  border-color var(--primary)
+}
+
 .el-button--success:focus, .el-button--success:hover {
+  opacity: 0.8
   background var(--primary)
   border-color var(--primary)
 }

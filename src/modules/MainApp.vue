@@ -62,6 +62,7 @@ export default defineComponent({
   padding 40px
   max-width 400px
   margin 0 auto
+  position relative
 }
 
 .bg {

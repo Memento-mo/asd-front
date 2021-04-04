@@ -1,9 +1,5 @@
 import { VuexControl } from "@/types/common_types";
-
-interface Question {
-  id: number;
-  text: string;
-}
+import { Question } from "@/types/questions";
 
 interface State {
   questions: Array<Question>;
@@ -29,15 +25,19 @@ export default {
     numberQuestion: (state: State): number => state.numberQuestion,
   },
   actions: {
-    fetchQuestions: ({ commit }: VuexControl<State>): void => {
-      // получить вопросы
-      const questions: Array<Question> = [
-        { id: 1, text: "Кто самый веселый человек?" },
-        { id: 2, text: "Сфоткай человека кто не съел утренний рулет?" },
-        { id: 3, text: "Кто умеет играть на гитаре?" },
-      ];
+    fetchQuestions: ({ commit }: VuexControl<State>): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        // получить вопросы
+        const questions: Array<Question> = [
+          { id: 1, text: "Кто самый веселый человек?" },
+          { id: 2, text: "Сфоткай человека кто не съел утренний рулет?" },
+          { id: 3, text: "Кто умеет играть на гитаре?" },
+        ];
 
-      commit("SET_QUESTIONS", questions);
+        commit("SET_QUESTIONS", questions);
+
+        resolve();
+      });
     },
     setNumber: ({ commit }: VuexControl<State>, newNumber: number): void => {
       commit("SET_NUMBER", newNumber);

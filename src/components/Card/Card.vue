@@ -27,6 +27,10 @@ export default defineComponent({
 .card {
   margin-top 1rem
 
+  &:hover {
+    transform translateY(0px)!important
+  }
+
   &-title {
     color #333
     font-size 1.4rem

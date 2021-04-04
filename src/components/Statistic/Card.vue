@@ -6,9 +6,11 @@
 
     <div class="card-body">
       <div class="card-body__header">
-        <h3>Глеб Пологов</h3>
+        <h3>{{ account.full_name }}</h3>
       </div>
-      <p class="card-body__text">Ответил на 100/200 вопросов</p>
+      <p class="card-body__text">
+        Ответил на {{ account.answers.length }}/{{ questions.length }} вопросов
+      </p>
     </div>
   </div>
 </template>
@@ -16,16 +18,24 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 export default defineComponent({
   props: {
     userId: {
-      required: true,
       type: String,
+      required: true,
+    },
+    account: {
+      type: Object,
+      required: true,
     },
   },
   setup(props) {
     const router = useRouter();
+    const store = useStore();
+
+    const questions = store.getters["questions/questions"];
 
     function handleTo() {
       router.push({
@@ -36,6 +46,7 @@ export default defineComponent({
 
     return {
       handleTo,
+      questions,
     };
   },
 });
