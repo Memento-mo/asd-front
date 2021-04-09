@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
@@ -35,7 +35,7 @@ export default defineComponent({
     const router = useRouter();
     const store = useStore();
 
-    const questions = store.getters["questions/questions"];
+    const questions = computed(() => store.getters["questions/questions"]);
 
     function handleTo() {
       router.push({

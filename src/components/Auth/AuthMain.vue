@@ -1,10 +1,11 @@
 <template>
+  <!-- eslint-disable vue/no-static-inline-styles */ -->
   <Card :class="$style.main">
     <template v-slot:header>
       <div class="card-title">Зарегистрируйся и участвуй в викторине!</div>
     </template>
-    <ElForm :class="$style.form">
-      <ElFormItem>
+    <ElForm ref="formRef" :class="$style.form" :rules="rules" :model="form">
+      <ElFormItem prop="fullName">
         <ElInput
           placeholder="Введите имя и фамилию"
           suffix-icon="el-icon-user-solid"
@@ -12,7 +13,7 @@
         />
       </ElFormItem>
 
-      <ElFormItem>
+      <ElFormItem prop="email">
         <ElInput
           placeholder="Введите email"
           type="email"
@@ -24,14 +25,29 @@
       <ElFormItem :class="$style.upload">
         <h3>Добавь свою фотографию</h3>
 
-        <ElUpload action="" class="avatar-uploader">
-          <img class="avatar" :src="imageUrl" v-if="imageUrl" />
+        <ElUpload
+          action="#"
+          class="avatar-uploader"
+          :http-request="handleAddPhoto"
+          :show-file-list="false"
+        >
           <PhotoIcon class="avatar-uploader-icon" />
         </ElUpload>
+
+        <div
+          :style="{
+            background: `url(${uploadedPhotos[0].url}) no-repeat center`,
+            backgroundSize: 'contain',
+            height: '200px',
+            width: '150px',
+            margin: '10px auto',
+          }"
+          v-if="uploadedPhotos.length === 1"
+        />
       </ElFormItem>
 
-      <ElFormItem :class="$style.secret">
-        <ElCheckbox v-model="form.secret">
+      <ElFormItem :class="$style.secret" prop="isAgree">
+        <ElCheckbox v-model="form.isAgree">
           Соглашаюсь
           <span :class="$style['secret-text']">
             с политикой конфиденциальности
@@ -39,7 +55,7 @@
         </ElCheckbox>
       </ElFormItem>
 
-      <ElButton type="success" class="auth-button" @click="handlerAuth">
+      <ElButton type="success" class="auth-button" @click="createUser">
         Регистрация
       </ElButton>
       <div class="signIn">
@@ -50,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "@vue/runtime-core";
+import { defineComponent, reactive, ref } from "@vue/runtime-core";
 
 import {
   ElForm,
@@ -58,12 +74,17 @@ import {
   ElInput,
   ElUpload,
   ElCheckbox,
+  ElNotification,
 } from "element-plus";
+import { Ref } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 import PhotoIcon from "../../icons/PhotoIcon.vue";
 
 import Card from "../Card/Card.vue";
+
+import { toBase64 } from "@/utils/base";
 
 export default defineComponent({
   components: {
@@ -75,25 +96,102 @@ export default defineComponent({
     PhotoIcon,
     Card,
   },
-  setup() {
+  setup(_) {
     const router = useRouter();
+    const store = useStore();
+    const formRef = ref(null);
 
     const form = reactive({
       email: "",
       fullName: "",
-      secret: false,
+      isAgree: false,
     });
 
-    const imageUrl = "";
+    const uploadedPhotos: Ref<Array<{ url: string; dataUrl: File }>> = ref([]);
+
+    const rules = {
+      fullName: [
+        {
+          required: true,
+          message: "Длина имени должна быть не менее 1 символа",
+          trigger: "blur",
+        },
+      ],
+      email: [
+        {
+          required: true,
+          message: "Длина должна быть не менее 1 символа",
+          trigger: "blur",
+        },
+      ],
+    };
+
+    function handleAddPhoto({ file }: { file: File }) {
+      if (uploadedPhotos.value.length === 1) {
+        uploadedPhotos.value = [];
+      }
+
+      let reader = new FileReader();
+      let name = file.name;
+      let ext = name.slice(name.lastIndexOf(".") + 1);
+      let data: string | ArrayBuffer | null = "";
+
+      if (ext === "jpeg" || ext === "png" || ext === "jpg") {
+        reader.onload = () => {
+          data = reader.result;
+
+          uploadedPhotos.value.push({
+            url: URL.createObjectURL(file),
+            dataUrl: file,
+          });
+        };
+        reader.readAsDataURL(file);
+      } else {
+        ElNotification({
+          type: "error",
+          title: "Это не фото",
+          message: "Поддерживаются форматы jpeg, png, jpg",
+        });
+      }
+    }
 
     function handlerAuth() {
       router.replace({ name: "questions" });
     }
 
+    function createUser() {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      (formRef.value! as {
+        validate: (fn: (isValid: boolean) => void) => void;
+      }).validate(async (isValid: boolean) => {
+        if (!isValid) return;
+        const formData = new FormData();
+        formData.append("user[full_name]", form.fullName);
+        formData.append("user[email]", form.email);
+        formData.append("user[isAgree]", String(form.isAgree));
+        if (uploadedPhotos.value.length > 0) {
+          formData.append("user[avatar]", uploadedPhotos.value[0].dataUrl);
+        }
+
+        const fileBase64 = await toBase64(uploadedPhotos.value[0].dataUrl);
+
+        store.dispatch("accounts/fetchCreateUser", {
+          full_name: form.fullName,
+          email: form.email,
+          isAgree: form.isAgree,
+          avatar: fileBase64,
+        });
+      });
+    }
+
     return {
       form,
-      imageUrl,
       handlerAuth,
+      createUser,
+      rules,
+      formRef,
+      handleAddPhoto,
+      uploadedPhotos,
     };
   },
 });

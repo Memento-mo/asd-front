@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted } from "@vue/runtime-core";
+import { computed, defineComponent } from "@vue/runtime-core";
 import { useStore } from "vuex";
 
 import Card from "../components/Statistic/Card.vue";
@@ -26,17 +26,6 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    function fetchAccounts() {
-      return store.dispatch("accounts/fetchAccounts");
-    }
-
-    async function init() {
-      await fetchAccounts();
-    }
-
-    onMounted(() => {
-      init();
-    });
     return {
       accounts: computed(() => store.getters["accounts/accounts"]),
     };

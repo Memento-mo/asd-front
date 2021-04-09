@@ -89,10 +89,6 @@ export default defineComponent({
       return store.dispatch("accounts/fetchAccounts");
     }
 
-    function fetchQuestions() {
-      return store.dispatch("questions/fetchQuestions");
-    }
-
     async function init() {
       if (!accounts.value.length) {
         await fetchAccounts();
@@ -100,10 +96,6 @@ export default defineComponent({
         setAccount();
       } else {
         setAccount();
-      }
-
-      if (!questions.value.length) {
-        await fetchQuestions();
       }
     }
 

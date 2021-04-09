@@ -4,6 +4,7 @@ export interface Answer {
    */
   id: string;
   answer: string;
+  img: string;
 }
 
 export interface Account {
@@ -11,4 +12,11 @@ export interface Account {
   email: string;
   full_name: string;
   answers: Array<Answer>;
+}
+
+export interface User {
+  full_name: string;
+  email: string;
+  avatar: string;
+  isAgree: boolean;
 }

@@ -1,6 +1,11 @@
 import { VuexControl } from "@/types/common_types";
-import { Account } from "@/types/accounts";
+import { Account, User } from "@/types/accounts";
 
+import img from "../assets/img";
+
+import { useAxios } from "@/api/api";
+
+const http = useAxios();
 interface State {
   accounts: Array<Account>;
 }
@@ -30,17 +35,17 @@ export default {
             email: "gpologov@gmail.com",
             full_name: "Глеб Пологов",
             answers: [
-              { id: "1", answer: "Саша Луговоской" },
-              { id: "2", answer: "Андрей Луговской" },
+              { id: "1", answer: "Саша Луговоской", img },
+              { id: "2", answer: "Андрей Луговской", img },
             ],
           },
           {
             id: "dfs34r",
             email: "glebpologov@mail.ru",
-            full_name: "Андрей Луговской",
+            full_name: "Дима Артемов",
             answers: [
-              { id: "2", answer: "Андрей Луговской" },
-              { id: "3", answer: "Миша Барышев" },
+              { id: "2", answer: "Андрей Луговской", img },
+              { id: "3", answer: "Миша Барышев", img },
             ],
           },
         ];
@@ -49,6 +54,14 @@ export default {
           resolve();
           commit("SET_ACCOUNTS", accounts);
         }, 100);
+      });
+    },
+    fetchCreateUser: (
+      { commit }: VuexControl<State>,
+      user: User
+    ): Promise<void> => {
+      return http.post("/api/auth/registration", user).then((data) => {
+        console.log(data);
       });
     },
   },
