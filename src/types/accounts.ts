@@ -17,6 +17,6 @@ export interface Account {
 export interface User {
   full_name: string;
   email: string;
-  avatar: string;
+  avatar: unknown;
   isAgree: boolean;
 }

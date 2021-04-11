@@ -19,6 +19,9 @@ export default {
     SET_ACCOUNTS: (state: State, accounts: Array<Account>): void => {
       state.accounts = accounts;
     },
+    SET_TOKEN: (state: State, token: string): void => {
+      localStorage.setItem("token", token);
+    },
   },
   getters: {
     accounts: ({ accounts }: State): Array<Account> => accounts,
@@ -60,8 +63,13 @@ export default {
       { commit }: VuexControl<State>,
       user: User
     ): Promise<void> => {
-      return http.post("/api/auth/registration", user).then((data) => {
-        console.log(data);
+      return http.post("/api/auth/registration", user).then(({ data }) => {
+        commit("SET_TOKEN", data.token);
+      });
+    },
+    fetchLogin: ({ commit }: VuexControl<State>, email: string) => {
+      return http.post("/api/auth/login", { email }).then(({ data }) => {
+        commit("SET_TOKEN", data.token);
       });
     },
   },

@@ -47,12 +47,14 @@
       </ElFormItem>
 
       <ElFormItem :class="$style.secret" prop="isAgree">
-        <ElCheckbox v-model="form.isAgree">
-          Соглашаюсь
-          <span :class="$style['secret-text']">
-            с политикой конфиденциальности
-          </span>
-        </ElCheckbox>
+        <ElCheckboxGroup v-model="form.isAgree">
+          <ElCheckbox name="isAgree">
+            Соглашаюсь
+            <span :class="$style['secret-text']">
+              с политикой конфиденциальности
+            </span>
+          </ElCheckbox>
+        </ElCheckboxGroup>
       </ElFormItem>
 
       <ElButton type="success" class="auth-button" @click="createUser">
@@ -74,6 +76,7 @@ import {
   ElInput,
   ElUpload,
   ElCheckbox,
+  ElCheckboxGroup,
   ElNotification,
 } from "element-plus";
 import { Ref } from "vue";
@@ -85,6 +88,7 @@ import PhotoIcon from "../../icons/PhotoIcon.vue";
 import Card from "../Card/Card.vue";
 
 import { toBase64 } from "@/utils/base";
+import { User } from "@/types/accounts";
 
 export default defineComponent({
   components: {
@@ -93,6 +97,7 @@ export default defineComponent({
     ElInput,
     ElUpload,
     ElCheckbox,
+    ElCheckboxGroup,
     PhotoIcon,
     Card,
   },
@@ -104,7 +109,7 @@ export default defineComponent({
     const form = reactive({
       email: "",
       fullName: "",
-      isAgree: false,
+      isAgree: [],
     });
 
     const uploadedPhotos: Ref<Array<{ url: string; dataUrl: File }>> = ref([]);
@@ -122,6 +127,14 @@ export default defineComponent({
           required: true,
           message: "Длина должна быть не менее 1 символа",
           trigger: "blur",
+        },
+      ],
+      isAgree: [
+        {
+          type: "array",
+          required: true,
+          message: "Соглашение обязательно",
+          trigger: "change",
         },
       ],
     };
@@ -159,26 +172,23 @@ export default defineComponent({
       router.replace({ name: "questions" });
     }
 
+    function fetchCreateUser(user: User) {
+      return store.dispatch("accounts/fetchCreateUser", user);
+    }
+
     function createUser() {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       (formRef.value! as {
         validate: (fn: (isValid: boolean) => void) => void;
       }).validate(async (isValid: boolean) => {
         if (!isValid) return;
-        const formData = new FormData();
-        formData.append("user[full_name]", form.fullName);
-        formData.append("user[email]", form.email);
-        formData.append("user[isAgree]", String(form.isAgree));
-        if (uploadedPhotos.value.length > 0) {
-          formData.append("user[avatar]", uploadedPhotos.value[0].dataUrl);
-        }
 
         const fileBase64 = await toBase64(uploadedPhotos.value[0].dataUrl);
 
-        store.dispatch("accounts/fetchCreateUser", {
+        fetchCreateUser({
           full_name: form.fullName,
           email: form.email,
-          isAgree: form.isAgree,
+          isAgree: form.isAgree.length > 0,
           avatar: fileBase64,
         });
       });
@@ -222,6 +232,9 @@ export default defineComponent({
   }
 
   .secret {
+    display flex
+    justify-content center
+
     &-text {
       color var(--secondary)
     }

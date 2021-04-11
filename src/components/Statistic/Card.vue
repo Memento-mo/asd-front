@@ -1,7 +1,7 @@
 <template>
   <div class="card" @click="handleTo">
     <div class="card-image">
-      <img src="../../assets/my-photo.jpg" />
+      <img src="http://localhost:5000/avatar/I7tXCeITqg12Azkb.jpeg" />
     </div>
 
     <div class="card-body">
