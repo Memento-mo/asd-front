@@ -27,8 +27,8 @@
         Отправить
       </ElButton>
 
-      <div class="signIn">
-        <router-link to="/login">Выйти</router-link>
+      <div :class="$style.logout">
+        <button @click="logout">Выйти</button>
       </div>
     </ElForm>
   </Card>
@@ -49,6 +49,7 @@ import { useStore } from "vuex";
 import Card from "../Card/Card.vue";
 
 import PhotoIcon from "../../icons/PhotoIcon.vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   components: {
@@ -60,6 +61,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
+    const router = useRouter();
 
     const form = reactive({
       answer: "",
@@ -102,6 +104,18 @@ export default defineComponent({
       currentQuestion.value = questions.value[numberQuestion.value];
     }
 
+    function fetchLogout() {
+      return store.dispatch("accounts/fetchLogout");
+    }
+
+    function logout(e: Event) {
+      e.preventDefault();
+
+      fetchLogout();
+
+      router.replace({ name: "login" });
+    }
+
     async function init() {
       await fetchQuestions();
 
@@ -118,6 +132,7 @@ export default defineComponent({
       handlerSendAnswer,
       currentQuestion,
       imageUrl,
+      logout,
     };
   },
 });
@@ -131,6 +146,24 @@ export default defineComponent({
     font-size 1.4rem
     margin-bottom 1.5rem
     line-height 1.6rem
+  }
+}
+
+.logout {
+  button {
+    color var(--secondary)
+    background #fff
+    border none
+    margin-top 1rem
+    cursor pointer
+    font-weight 500
+    font-size 1.4rem
+    outline none
+    transition var(--transition)
+
+    &:hover {
+      opacity 0.7
+    }
   }
 }
 </style>

@@ -57,7 +57,12 @@
         </ElCheckboxGroup>
       </ElFormItem>
 
-      <ElButton type="success" class="auth-button" @click="createUser">
+      <ElButton
+        :loading="isLoading"
+        type="success"
+        class="auth-button"
+        @click="createUser"
+      >
         Регистрация
       </ElButton>
       <div class="signIn">
@@ -105,6 +110,8 @@ export default defineComponent({
     const router = useRouter();
     const store = useStore();
     const formRef = ref(null);
+
+    const isLoading = ref(false);
 
     const form = reactive({
       email: "",
@@ -176,12 +183,25 @@ export default defineComponent({
       return store.dispatch("accounts/fetchCreateUser", user);
     }
 
+    function fetchUser() {
+      return store.dispatch("accounts/fetchUser");
+    }
+
     function createUser() {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       (formRef.value! as {
         validate: (fn: (isValid: boolean) => void) => void;
       }).validate(async (isValid: boolean) => {
         if (!isValid) return;
+
+        if (uploadedPhotos.value.length === 0) {
+          ElNotification({
+            title: "Выберите изображение",
+            type: "error",
+          });
+          return;
+        }
+        isLoading.value = true;
 
         const fileBase64 = await toBase64(uploadedPhotos.value[0].dataUrl);
 
@@ -190,7 +210,24 @@ export default defineComponent({
           email: form.email,
           isAgree: form.isAgree.length > 0,
           avatar: fileBase64,
-        });
+        })
+          .then(async () => {
+            await fetchUser();
+
+            router.push({ name: "questions" });
+          })
+          .catch((error) => {
+            if (error.response.status === 400) {
+              ElNotification({
+                title: "Пользователь существует",
+                message: "Пользователь с данной почтой уже зарегистрирован",
+                type: "error",
+              });
+            }
+          })
+          .finally(() => {
+            isLoading.value = false;
+          });
       });
     }
 
@@ -202,6 +239,7 @@ export default defineComponent({
       formRef,
       handleAddPhoto,
       uploadedPhotos,
+      isLoading,
     };
   },
 });

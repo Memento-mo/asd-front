@@ -12,10 +12,12 @@
 import { defineComponent, onMounted } from "vue";
 
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 export default defineComponent({
   setup() {
     const router = useRouter();
+    const store = useStore();
 
     function setViewPort() {
       let viewheight = window.innerHeight;
@@ -32,13 +34,22 @@ export default defineComponent({
       );
     }
 
+    function fetchUser() {
+      return store.dispatch("accounts/fetchUser");
+    }
+
     function redirect() {
       // router.replace({ name: "questions" });
     }
 
-    onMounted(() => {
+    function init() {
       setViewPort();
+      fetchUser();
       redirect();
+    }
+
+    onMounted(() => {
+      init();
     });
   },
 });

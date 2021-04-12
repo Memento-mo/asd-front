@@ -1,45 +1,47 @@
 <template>
-  <div :class="$style['card-item']">
-    <div :class="$style['card-item__title']">
-      <h1>{{ account.full_name }}</h1>
-    </div>
-
-    <main :class="$style['card-item__main']">
-      <div :class="$style['card-item__img']">
-        <img src="../assets/my-photo.jpg" />
+  <div :class="$style.box" v-loading="!account">
+    <div :class="$style['card-item']" v-if="account">
+      <div :class="$style['card-item__title']">
+        <h1>{{ account.full_name }}</h1>
       </div>
 
-      <div :class="$style['card-item__questions']">
-        <h2 :class="$style['card-item__questions-subtitle']">Вопросы</h2>
-
-        <div :class="$style['card-item__questions-numbers']">
-          <QuestionPicker
-            :key="index"
-            :question="question"
-            :questionNumber="index + 1"
-            :isDisabled="isExistAnswer(question.id)"
-            v-for="(question, index) in questions"
-            @handler-set-question="setVisibleQuestion"
-          />
+      <main :class="$style['card-item__main']">
+        <div :class="$style['card-item__img']">
+          <img :src="linkImg()" />
         </div>
-      </div>
-    </main>
-    <QuestionDialog
-      :question="visibleQuestion"
-      v-model:isVisible="isVisibleDialog"
-    />
+
+        <div :class="$style['card-item__questions']">
+          <h2 :class="$style['card-item__questions-subtitle']">Вопросы</h2>
+
+          <div :class="$style['card-item__questions-numbers']">
+            <QuestionPicker
+              :key="index"
+              :question="question"
+              :questionNumber="index + 1"
+              :isDisabled="isExistAnswer(question.id)"
+              v-for="(question, index) in questions"
+              @handler-set-question="setVisibleQuestion"
+            />
+          </div>
+        </div>
+      </main>
+      <QuestionDialog
+        :question="visibleQuestion"
+        v-model:isVisible="isVisibleDialog"
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed, Ref } from "vue";
+import { defineComponent, ref, onMounted, computed, Ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 
 import QuestionPicker from "../components/Statistic/QuestionPicker.vue";
 import QuestionDialog from "../components/Dialogs/QuestionDialog.vue";
 import { Question } from "@/types/questions";
-import { Account } from "@/types/accounts";
+import { getBaseUrl } from "@/utils/base";
 
 export default defineComponent({
   components: {
@@ -50,14 +52,9 @@ export default defineComponent({
     const route = useRoute();
     const store = useStore();
 
-    const account: Ref<Account> = ref({
-      id: "",
-      email: "",
-      full_name: "",
-      answers: [],
-    });
-
-    const accounts = computed(() => store.getters["accounts/accounts"]);
+    const account = computed(() =>
+      store.getters["accounts/account"](route.params.id)
+    );
     const questions = computed(() => store.getters["questions/questions"]);
 
     const visibleQuestion = ref({});
@@ -74,34 +71,16 @@ export default defineComponent({
     }
 
     function isExistAnswer(id: string) {
-      const index = account.value.answers.findIndex(
-        (answer) => String(answer.id) === String(id)
-      );
+      // const index = account.value.answers.findIndex(
+      //   (answer) => String(answer.id) === String(id)
+      // );
 
-      return index === -1;
+      return true;
     }
 
-    function setAccount() {
-      account.value = store.getters["accounts/account"](route.params.id);
+    function linkImg() {
+      return `${getBaseUrl()}/avatar/${account.value.avatar}`;
     }
-
-    function fetchAccounts() {
-      return store.dispatch("accounts/fetchAccounts");
-    }
-
-    async function init() {
-      if (!accounts.value.length) {
-        await fetchAccounts();
-
-        setAccount();
-      } else {
-        setAccount();
-      }
-    }
-
-    onMounted(() => {
-      init();
-    });
 
     return {
       account,
@@ -110,6 +89,7 @@ export default defineComponent({
       setVisibleQuestion,
       isVisibleDialog,
       isExistAnswer,
+      linkImg,
     };
   },
 });
@@ -158,5 +138,9 @@ export default defineComponent({
       justify-content center
     }
   }
+}
+
+.box {
+  min-height 40rem
 }
 </style>

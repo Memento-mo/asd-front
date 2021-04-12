@@ -1,7 +1,7 @@
 <template>
   <div class="card" @click="handleTo">
     <div class="card-image">
-      <img src="http://localhost:5000/avatar/I7tXCeITqg12Azkb.jpeg" />
+      <img :src="linkImg()" />
     </div>
 
     <div class="card-body">
@@ -9,7 +9,7 @@
         <h3>{{ account.full_name }}</h3>
       </div>
       <p class="card-body__text">
-        Ответил на {{ account.answers.length }}/{{ questions.length }} вопросов
+        <!-- Ответил на {{ account.answers.length }}/{{ questions.length }} вопросов -->
       </p>
     </div>
   </div>
@@ -19,6 +19,7 @@
 import { computed, defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import { getBaseUrl } from "@/utils/base";
 
 export default defineComponent({
   props: {
@@ -44,9 +45,14 @@ export default defineComponent({
       });
     }
 
+    function linkImg() {
+      return `${getBaseUrl()}/avatar/${props.account.avatar}`;
+    }
+
     return {
       handleTo,
       questions,
+      linkImg,
     };
   },
 });

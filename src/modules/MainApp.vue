@@ -11,11 +11,12 @@
           </transition>
         </template>
 
-        <router-view v-slot="{ Component }">
+        <!-- <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
             <component :is="Component" />
           </transition>
-        </router-view>
+        </router-view> -->
+        <router-view />
       </Container>
     </div>
     <div :class="$style.bg" />

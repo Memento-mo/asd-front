@@ -6,7 +6,7 @@
       </div>
     </template>
 
-    <ElForm v-model="form">
+    <ElForm @submit.prevent="handlerAuth" v-model="form">
       <ElFormItem>
         <ElInput
           type="email"
@@ -16,7 +16,12 @@
         />
       </ElFormItem>
 
-      <ElButton type="success" class="auth-button" @click="handlerAuth">
+      <ElButton
+        type="success"
+        class="auth-button"
+        :loading="isLoading"
+        @click.prevent="handlerAuth"
+      >
         Войти
       </ElButton>
 
@@ -28,7 +33,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from "vue";
 
 import Card from "../Card/Card.vue";
 
@@ -56,19 +68,41 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const store = useStore();
+    const isLoading = ref(false);
 
     const form = reactive({
       email: "",
     });
 
+    const user = computed(() => store.getters["accounts/user"]);
+
     function fetchLogin() {
       return store.dispatch("accounts/fetchLogin", form.email);
     }
 
+    function fetchUser() {
+      return store.dispatch("accounts/fetchUser");
+    }
+
+    watch(
+      () => user.value,
+      () => {
+        redirectUser();
+      }
+    );
+
+    function redirectUser() {
+      if (user.value) {
+        router.replace({ name: "questions" });
+      }
+    }
+
     function handlerAuth() {
+      isLoading.value = true;
+
       fetchLogin()
-        .then(() => {
-          router.replace({ name: "questions" });
+        .then(async () => {
+          await fetchUser();
         })
         .catch(() => {
           ElNotification({
@@ -76,12 +110,20 @@ export default defineComponent({
             title: "Аккаунт не найден",
             message: "Неправильная почта",
           });
+        })
+        .finally(() => {
+          isLoading.value = false;
         });
     }
+
+    onMounted(() => {
+      redirectUser();
+    });
 
     return {
       form,
       handlerAuth,
+      isLoading,
     };
   },
 });
