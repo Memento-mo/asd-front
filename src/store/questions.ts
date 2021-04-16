@@ -1,6 +1,10 @@
 import { VuexControl } from "@/types/common_types";
 import { Question } from "@/types/questions";
 
+import { useAxios } from "@/api/api";
+
+const http = useAxios();
+
 interface State {
   questions: Array<Question>;
   numberQuestion: number;
@@ -26,17 +30,8 @@ export default {
   },
   actions: {
     fetchQuestions: ({ commit }: VuexControl<State>): Promise<void> => {
-      return new Promise((resolve, reject) => {
-        // получить вопросы
-        const questions: Array<Question> = [
-          { id: 1, text: "Кто самый веселый человек?" },
-          { id: 2, text: "Сфоткай человека кто не съел утренний рулет?" },
-          { id: 3, text: "Кто умеет играть на гитаре?" },
-        ];
-
-        commit("SET_QUESTIONS", questions);
-
-        resolve();
+      return http.get("/api/questions").then(({ data }) => {
+        commit("SET_QUESTIONS", data.questions);
       });
     },
     setNumber: ({ commit }: VuexControl<State>, newNumber: number): void => {

@@ -7,6 +7,7 @@ const http = useAxios();
 interface State {
   accounts: Array<User>;
   account: User | null;
+  token: string | null;
 }
 
 export default {
@@ -14,6 +15,7 @@ export default {
   state: {
     accounts: [],
     account: null,
+    token: null,
   },
   mutations: {
     SET_ACCOUNTS: (state: State, accounts: Array<User>): void => {
@@ -23,12 +25,18 @@ export default {
       state.account = account;
     },
     SET_TOKEN: (state: State, token: string): void => {
+      state.token = token;
+
       localStorage.setItem("token", token);
     },
     CLEAR_ACCOUNT: (state: State): void => {
       localStorage.removeItem("token");
 
       state.account = null;
+      state.token = null;
+    },
+    SET_STATE_TOKEN: (state: State, token: string): void => {
+      state.token = token;
     },
   },
   getters: {
@@ -36,32 +44,13 @@ export default {
     account: ({ accounts }: State) => (id: string): User | undefined =>
       accounts.find((account) => account.email === id),
     user: ({ account }: State): User | null => account,
+    token: ({ token }: State): string | null => token,
   },
   actions: {
     fetchAccounts: ({ commit }: VuexControl<State>): void => {
       http.get("/api/users").then(({ data }) => {
         commit("SET_ACCOUNTS", data.users);
       });
-      // const accounts: Array<Account> = [
-      //   {
-      //     id: "er43r2edwd",
-      //     email: "gpologov@gmail.com",
-      //     full_name: "Глеб Пологов",
-      //     answers: [
-      //       { id: "1", answer: "Саша Луговоской", img },
-      //       { id: "2", answer: "Андрей Луговской", img },
-      //     ],
-      //   },
-      //   {
-      //     id: "dfs34r",
-      //     email: "glebpologov@mail.ru",
-      //     full_name: "Дима Артемов",
-      //     answers: [
-      //       { id: "2", answer: "Андрей Луговской", img },
-      //       { id: "3", answer: "Миша Барышев", img },
-      //     ],
-      //   },
-      // ];
     },
     fetchCreateUser: (
       { commit }: VuexControl<State>,
@@ -90,6 +79,16 @@ export default {
     },
     fetchLogout: ({ commit }: VuexControl<State>): void => {
       commit("CLEAR_ACCOUNT");
+    },
+    setToken: ({ commit }: VuexControl<State>): boolean => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        commit("SET_STATE_TOKEN", token);
+
+        return true;
+      }
+
+      return false;
     },
   },
 };

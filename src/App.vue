@@ -38,12 +38,21 @@ export default defineComponent({
       return store.dispatch("accounts/fetchUser");
     }
 
+    function setToken() {
+      const isTokenExist = store.dispatch("accounts/setToken");
+
+      if (!isTokenExist) {
+        router.replace({ name: "login" });
+      }
+    }
+
     function redirect() {
       // router.replace({ name: "questions" });
     }
 
     function init() {
       setViewPort();
+      setToken();
       fetchUser();
       redirect();
     }

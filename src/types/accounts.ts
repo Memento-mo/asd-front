@@ -1,11 +1,4 @@
-export interface Answer {
-  /**
-   * @description id вопроса
-   */
-  id: string;
-  answer: string;
-  img: string;
-}
+import { Answer } from "./answer";
 
 export interface Account {
   id: string;

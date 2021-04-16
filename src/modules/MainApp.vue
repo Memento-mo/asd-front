@@ -6,8 +6,12 @@
       <Container>
         <template v-slot:icon>
           <transition name="fade" mode="out-in">
-            <QuestionIcon key="question" v-if="isQuestionsPage" />
-            <ManIcon key="auth" v-else-if="isAuthPages" />
+            <router-link key="question" to="/" v-if="isQuestionsPage">
+              <QuestionIcon />
+            </router-link>
+            <router-link key="auth" to="/" v-else-if="isAuthPages">
+              <ManIcon />
+            </router-link>
           </transition>
         </template>
 

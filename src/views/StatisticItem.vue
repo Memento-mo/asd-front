@@ -60,7 +60,7 @@ export default defineComponent({
     const visibleQuestion = ref({});
     const isVisibleDialog = ref(false);
 
-    function setVisibleQuestion(id: number) {
+    function setVisibleQuestion(id: string) {
       const foundQuestion = questions.value.find(
         (question: Question) => question.id === id
       );

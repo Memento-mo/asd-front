@@ -10,6 +10,7 @@
       </div>
       <p class="card-body__text">
         <!-- Ответил на {{ account.answers.length }}/{{ questions.length }} вопросов -->
+        Ответил на 5/10 вопросов
       </p>
     </div>
   </div>
