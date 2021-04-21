@@ -7,7 +7,7 @@
 
       <main :class="$style['card-item__main']">
         <div :class="$style['card-item__img']">
-          <img :src="linkImg()" />
+          <img :src="linkImg(account.avatar)" />
         </div>
 
         <div :class="$style['card-item__questions']">
@@ -18,7 +18,7 @@
               :key="index"
               :question="question"
               :questionNumber="index + 1"
-              :isDisabled="isExistAnswer(question.id)"
+              :isDisabled="!isExistAnswer(question.id)"
               v-for="(question, index) in questions"
               @handler-set-question="setVisibleQuestion"
             />
@@ -34,14 +34,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed, Ref, watch } from "vue";
+import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 
 import QuestionPicker from "../components/Statistic/QuestionPicker.vue";
 import QuestionDialog from "../components/Dialogs/QuestionDialog.vue";
 import { Question } from "@/types/questions";
-import { getBaseUrl } from "@/utils/base";
+import { linkImg } from "@/utils/base";
+import { User } from "@/types/accounts";
+import { UserAnswers } from "@/types/answer";
 
 export default defineComponent({
   components: {
@@ -52,10 +54,13 @@ export default defineComponent({
     const route = useRoute();
     const store = useStore();
 
-    const account = computed(() =>
-      store.getters["accounts/account"](route.params.id)
+    const account = computed(
+      (): User => store.getters["accounts/account"](route.params.id)
     );
     const questions = computed(() => store.getters["questions/questions"]);
+    const userAnswers = computed(
+      (): UserAnswers => store.getters["answers/userAnswers"]
+    );
 
     const visibleQuestion = ref({});
     const isVisibleDialog = ref(false);
@@ -71,16 +76,31 @@ export default defineComponent({
     }
 
     function isExistAnswer(id: string) {
-      // const index = account.value.answers.findIndex(
-      //   (answer) => String(answer.id) === String(id)
-      // );
+      const index = userAnswers.value.findIndex(
+        (answer) => String(answer.question_id) === String(id)
+      );
 
-      return true;
+      return index !== -1;
     }
 
-    function linkImg() {
-      return `${getBaseUrl()}/avatar/${account.value.avatar}`;
+    function fetchUserAnswers() {
+      store.dispatch("answers/fetchUserAnswers", account.value.id);
     }
+
+    watch(
+      () => account.value,
+      () => {
+        if (account.value) {
+          fetchUserAnswers();
+        }
+      }
+    );
+
+    onMounted(() => {
+      if (account.value) {
+        fetchUserAnswers();
+      }
+    });
 
     return {
       account,

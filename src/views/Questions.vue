@@ -1,15 +1,15 @@
 <template>
-  <QuestionsMain />
+  <QuestionsComponentCard />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
-import QuestionsMain from "../components/Questions/QuestionsMain.vue";
+import QuestionsComponentCard from "../components/Questions/QuestionsComponentCard.vue";
 
 export default defineComponent({
   components: {
-    QuestionsMain,
+    QuestionsComponentCard,
   },
 });
 </script>

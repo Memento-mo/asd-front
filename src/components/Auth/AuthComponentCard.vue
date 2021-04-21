@@ -35,15 +35,26 @@
         </ElUpload>
 
         <div
+          :class="$style.form_item_image__block"
           :style="{
             background: `url(${uploadedPhotos[0].url}) no-repeat center`,
-            backgroundSize: 'contain',
+            backgroundSize: 'cover',
             height: '200px',
             width: '150px',
             margin: '10px auto',
           }"
           v-if="uploadedPhotos.length === 1"
-        />
+        >
+          <div
+            :class="$style.form_item_image__control"
+            @click="handleRemovePhoto()"
+          >
+            <i
+              :class="[$style.icon, $style.icon_delete]"
+              class="el-icon-delete-solid"
+            />
+          </div>
+        </div>
       </ElFormItem>
 
       <ElFormItem :class="$style.secret" prop="isAgree">
@@ -187,6 +198,10 @@ export default defineComponent({
       return store.dispatch("accounts/fetchUser");
     }
 
+    function handleRemovePhoto() {
+      uploadedPhotos.value = [];
+    }
+
     function createUser() {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       (formRef.value! as {
@@ -240,6 +255,7 @@ export default defineComponent({
       handleAddPhoto,
       uploadedPhotos,
       isLoading,
+      handleRemovePhoto,
     };
   },
 });
@@ -306,5 +322,38 @@ export default defineComponent({
     background-color #EBEEF5
     margin 2rem 0
   }
+}
+
+.form_item {
+  &_image__block {
+    position relative
+    box-shadow 0 5px 20px 0 rgba(0, 0, 0, 0.5)
+    border-radius 4px
+  }
+  &_image__control {
+    position absolute
+    top 0
+    height 100%
+    width 100%
+    background rgba(0, 0, 0, .6)
+    opacity 0
+
+    display flex
+    justify-content center
+    align-items center
+
+    visibility hidden
+    transition 0.2s ease
+    border-radius 4px
+  }
+
+  &_image__block:hover &_image__control {
+    opacity 1
+    visibility visible
+  }
+}
+
+.icon {
+  color #fff
 }
 </style>

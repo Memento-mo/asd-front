@@ -13,3 +13,7 @@ export const getBaseUrl = (): string => {
     return "";
   }
 };
+
+export function linkImg(value: string) {
+  return `${getBaseUrl()}/avatar/${value}`;
+}

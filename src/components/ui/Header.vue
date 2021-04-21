@@ -4,21 +4,24 @@
       <h1>{{ title }}</h1>
     </div>
 
-    <transition name="fade" mode="in-out">
-      <ElCard :class="$style.card" v-show="isMainPage">
-        <div class="row justify-content-center">
-          <router-link to="/auth">
-            <ElButton type="success"> Регистрация </ElButton>
-          </router-link>
-          <router-link to="/login">
-            <ElButton type="success"> Войти </ElButton>
-          </router-link>
-        </div>
+    <ElCard :class="$style.card" v-show="isMainPage">
+      <div class="row justify-content-center">
+        <router-link to="/auth">
+          <ElButton type="success">Регистрация</ElButton>
+        </router-link>
+        <router-link to="/login">
+          <ElButton type="success">Войти</ElButton>
+        </router-link>
+      </div>
+      <div class="row align-items-center justify-content-center">
         <div :class="$style['card-statistic']">
           <router-link to="/statistic">Статистика</router-link>
         </div>
-      </ElCard>
-    </transition>
+        <div :class="$style['card-statistic']" v-if="isToken">
+          <div :class="$style['card-logout']" @click="logout">Выйти</div>
+        </div>
+      </div>
+    </ElCard>
   </header>
 </template>
 
@@ -26,7 +29,7 @@
 import { computed, defineComponent, onMounted, ref, watch } from "vue";
 
 import { ElButton, ElCard } from "element-plus";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
 
 export default defineComponent({
@@ -37,13 +40,16 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const route = useRoute();
-    const title = ref("Молодежный отдел цо приветствует тебя!");
+    const router = useRouter();
+    const title = ref("Молодежный отдел цо и рко приветствует тебя!");
 
     const currentNumber = computed(
       () => store.getters["questions/numberQuestion"]
     );
 
     const isMainPage = computed(() => route.name === "main");
+
+    const isToken = computed(() => store.getters["accounts/token"]);
 
     watch(
       () => [route.name, currentNumber.value],
@@ -54,11 +60,22 @@ export default defineComponent({
 
     function changeTitle() {
       if (route.name === "questions") {
-        // из стора получить текущий вопрос
-        title.value = `Вопрос ${currentNumber.value + 1}`;
+        title.value = "Вопрос";
       } else {
-        title.value = "Молодежный отдел цо приветствует тебя!";
+        title.value = "Молодежный отдел цо и рко приветствует тебя!";
       }
+    }
+
+    function fetchLogout() {
+      return store.dispatch("accounts/fetchLogout");
+    }
+
+    function logout(e: Event) {
+      e.preventDefault();
+
+      fetchLogout();
+
+      router.replace({ name: "login" });
     }
 
     function init() {
@@ -71,6 +88,8 @@ export default defineComponent({
     return {
       isMainPage,
       title,
+      logout,
+      isToken,
     };
   },
 });
@@ -104,6 +123,13 @@ header {
       font-size 1.4rem
       color var(--secondary)
     }
+  }
+
+  &-logout {
+    cursor pointer
+    font-weight 500
+    font-size 1.4rem
+    color var(--secondary)
   }
 }
 </style>

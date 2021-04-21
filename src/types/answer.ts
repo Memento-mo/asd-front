@@ -6,3 +6,5 @@ export interface Answer {
   text: string;
   image: string;
 }
+
+export type UserAnswers = Array<Answer>;

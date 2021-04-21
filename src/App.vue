@@ -51,7 +51,7 @@ export default defineComponent({
     }
 
     function init() {
-      setViewPort();
+      // setViewPort();
       setToken();
       fetchUser();
       redirect();

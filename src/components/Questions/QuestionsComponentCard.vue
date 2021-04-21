@@ -1,6 +1,6 @@
 <template>
   <!-- eslint-disable vue/no-static-inline-styles */ -->
-  <Card>
+  <Card v-loading="isLoadingQuestions">
     <template v-slot:header>
       <div class="card-title">{{ currentQuestion.text }}</div>
     </template>
@@ -38,11 +38,13 @@
           }"
           v-if="uploadedPhotos.length === 1"
         >
-          <div :class="$style.form_item_image__control">
+          <div
+            :class="$style.form_item_image__control"
+            @click="handleRemovePhoto()"
+          >
             <i
               :class="[$style.icon, $style.icon_delete]"
               class="el-icon-delete-solid"
-              @click="handleRemovePhoto()"
             />
           </div>
         </div>
@@ -103,6 +105,7 @@ export default defineComponent({
     });
 
     const isLoading = ref(false);
+    const isLoadingQuestions = ref(false);
 
     const uploadedPhotos: Ref<Array<{ url: string; dataUrl: File }>> = ref([]);
 
@@ -258,11 +261,13 @@ export default defineComponent({
     }
 
     async function init() {
+      isLoadingQuestions.value = true;
       await fetchUserAnswers();
       await fetchQuestions();
 
       setQuestion();
       setNumber();
+      isLoadingQuestions.value = false;
     }
 
     onMounted(() => {
@@ -279,6 +284,7 @@ export default defineComponent({
       handleAddPhoto,
       isValid,
       isLoading,
+      isLoadingQuestions,
     };
   },
 });

@@ -1,14 +1,14 @@
 <template>
-  <Main />
+  <LoginComponentCard />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Main from "../components/Login/LoginMain.vue";
+import LoginComponentCard from "../components/Login/LoginComponentCard.vue";
 
 export default defineComponent({
   components: {
-    Main,
+    LoginComponentCard,
   },
   setup() {
     return {};
