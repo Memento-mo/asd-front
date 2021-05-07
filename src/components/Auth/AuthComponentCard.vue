@@ -218,7 +218,7 @@ export default defineComponent({
         }
         isLoading.value = true;
 
-        const fileBase64 = await toBase64(uploadedPhotos.value[0].dataUrl);
+        const fileBase64: any = await toBase64(uploadedPhotos.value[0].dataUrl);
 
         fetchCreateUser({
           full_name: form.fullName,

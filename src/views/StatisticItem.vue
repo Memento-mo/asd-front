@@ -7,7 +7,8 @@
 
       <main :class="$style['card-item__main']">
         <div :class="$style['card-item__img']">
-          <img :src="linkImg(account.avatar)" />
+          <div class="card-loading" v-if="!base64Image" v-loading="true" />
+          <img :src="base64Image" v-else />
         </div>
 
         <div :class="$style['card-item__questions']">
@@ -54,6 +55,8 @@ export default defineComponent({
     const route = useRoute();
     const store = useStore();
 
+    const base64Image = ref("");
+
     const account = computed(
       (): User => store.getters["accounts/account"](route.params.id)
     );
@@ -87,17 +90,29 @@ export default defineComponent({
       store.dispatch("answers/fetchUserAnswers", account.value.id);
     }
 
+    async function getLinkImg(url: string) {
+      const src = await linkImg(url);
+
+      base64Image.value = src;
+    }
+
+    async function init() {
+      await getLinkImg(account.value.avatar);
+    }
+
     watch(
       () => account.value,
       () => {
         if (account.value) {
           fetchUserAnswers();
+          init();
         }
       }
     );
 
     onMounted(() => {
       if (account.value) {
+        init();
         fetchUserAnswers();
       }
     });
@@ -109,7 +124,7 @@ export default defineComponent({
       setVisibleQuestion,
       isVisibleDialog,
       isExistAnswer,
-      linkImg,
+      base64Image,
     };
   },
 });

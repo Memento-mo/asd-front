@@ -131,7 +131,7 @@ export default defineComponent({
       }
     );
 
-    async function fetchSendAnswer(question: Question) {
+    async function fetchSendAnswer(question: Question, answer: string) {
       if (uploadedPhotos.value.length === 0) {
         ElNotification({
           title: "Нельзя",
@@ -145,7 +145,7 @@ export default defineComponent({
 
       return store.dispatch("answers/fetchSendAnswer", {
         question_id: question.id,
-        text: form.answer,
+        text: answer,
         image: fileBase64,
       } as Answer);
     }
@@ -162,14 +162,16 @@ export default defineComponent({
     function handlerSendAnswer() {
       isLoading.value = true;
 
-      fetchSendAnswer(currentQuestion.value)
+      const answer: string = form.answer;
+
+      numberQuestion.value++;
+      setNumber();
+
+      fetchSendAnswer(currentQuestion.value, answer)
         .then(async () => {
           if (numberQuestion.value === questions.value.length - 1) return;
 
           await fetchUserAnswers();
-
-          numberQuestion.value++;
-          setNumber();
         })
         .catch((error) => {
           if (error.response.status === 422) {
@@ -178,15 +180,11 @@ export default defineComponent({
               title: "Ответить дважды нельзя",
               message: "Вы уже отвечали на этот вопрос",
             });
-
-            numberQuestion.value++;
-            setNumber();
           }
-        })
-        .finally(() => {
-          clearForm();
-          isLoading.value = false;
         });
+
+      clearForm();
+      isLoading.value = false;
     }
 
     function setNumber() {

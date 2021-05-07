@@ -1,7 +1,9 @@
 <template>
   <div class="card" @click="handleTo">
     <div class="card-image">
-      <img :src="linkImg(account.avatar)" />
+      <div class="card-loading" v-if="!base64Image" v-loading="true" />
+
+      <img :src="base64Image" v-else />
     </div>
 
     <div class="card-body">
@@ -16,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { linkImg } from "@/utils/base";
@@ -37,6 +39,7 @@ export default defineComponent({
     const store = useStore();
 
     const questions = computed(() => store.getters["questions/questions"]);
+    const base64Image = ref("");
 
     function handleTo() {
       router.push({
@@ -45,10 +48,24 @@ export default defineComponent({
       });
     }
 
+    async function getLinkImg(url: string) {
+      const src = await linkImg(url);
+
+      base64Image.value = src;
+    }
+
+    async function init() {
+      await getLinkImg(props.account.avatar);
+    }
+
+    onMounted(() => {
+      init();
+    });
+
     return {
       handleTo,
       questions,
-      linkImg,
+      base64Image,
     };
   },
 });
@@ -106,6 +123,14 @@ export default defineComponent({
       opacity .8
       font-size 1.36rem
     }
+  }
+
+  &-loading {
+    height 200px
+    width 100%
+    display flex
+    align-items center
+    justify-content center
   }
 }
 </style>

@@ -1,4 +1,4 @@
-export const toBase64 = (file: File): unknown =>
+export const toBase64 = (file: File) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -7,13 +7,19 @@ export const toBase64 = (file: File): unknown =>
   });
 
 export const getBaseUrl = (): string => {
-  if (process.env.NODE_ENV === "development") {
-    return "http://localhost:5000";
-  } else {
-    return "";
-  }
+  // if (process.env.NODE_ENV === "development") {
+    // return "http://localhost:5000";
+  // } else {
+  return "https://fathomless-island-04062.herokuapp.com";
+  // }
 };
 
-export function linkImg(value: string) {
-  return `${getBaseUrl()}/avatar/${value}`;
+export async function linkImg(value: string): Promise<string> {
+  const base64Img = await fetch(value).then((res) => {
+    if (res.ok) {
+      return res.text();
+    }
+  });
+
+  return base64Img || "";
 }

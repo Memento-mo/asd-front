@@ -1,7 +1,7 @@
 export interface User {
   full_name: string;
   email: string;
-  avatar: unknown;
+  avatar: string;
   isAgree: boolean;
   count?: number;
   id?: string;

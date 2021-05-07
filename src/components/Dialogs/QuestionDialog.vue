@@ -19,7 +19,9 @@
       >
         <div :class="$style.title">Изображение:</div>
         <div>
-          <img :src="linkImg(imageAnswer)" />
+          <div class="card-loading" v-if="!imageAnswer" v-loading="true" />
+
+          <img :src="imageAnswer" v-else />
         </div>
       </div>
     </main>
@@ -32,6 +34,7 @@ import { ElDialog } from "element-plus";
 import { useStore } from "vuex";
 
 import { linkImg } from "@/utils/base";
+import { Answer } from "@/types/answer";
 
 export default defineComponent({
   components: {
@@ -47,7 +50,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const store = useStore();
 
-    const userAnswer = ref({ text: "", image: "" });
+    const userAnswer = ref({ text: "Загрузка...", image: "" });
 
     const textAnswer = computed(() => userAnswer.value.text);
     const imageAnswer = computed(() => userAnswer.value.image);
@@ -56,15 +59,33 @@ export default defineComponent({
       emit("update:isVisible", false);
     }
 
-    function setAnswer() {
-      const answer = store.getters["answers/userAnswerById"](props.question.id);
+    async function setAnswer() {
+      const answer: Answer = store.getters["answers/userAnswerById"](
+        props.question.id
+      );
 
-      userAnswer.value = answer;
+      const image = await getLinkImg(answer.image);
+
+      const updatedAnswer = { text: answer.text, image };
+
+      userAnswer.value = updatedAnswer;
+    }
+
+    async function getLinkImg(url: string) {
+      const src = await linkImg(url);
+
+      return src;
+    }
+
+    function clearForm() {
+      userAnswer.value.image = "";
+      userAnswer.value.text = "Загрузка...";
     }
 
     watch(
       () => props.question,
       () => {
+        clearForm();
         setAnswer();
       }
     );

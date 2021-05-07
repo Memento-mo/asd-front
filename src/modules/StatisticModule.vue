@@ -57,6 +57,7 @@ export default defineComponent({
 
 <style lang="stylus" module>
 .icon {
+  z-index 9999999
   display flex
   justify-content center
   align-items center
