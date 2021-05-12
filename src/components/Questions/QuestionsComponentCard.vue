@@ -180,11 +180,18 @@ export default defineComponent({
               title: "Ответить дважды нельзя",
               message: "Вы уже отвечали на этот вопрос",
             });
+          } else {
+            ElNotification({
+              type: "error",
+              title: "Ошибка ответа",
+              message: "Ответ сохранить не удалось",
+            });
           }
+        })
+        .finally(() => {
+          clearForm();
+          isLoading.value = false;
         });
-
-      clearForm();
-      isLoading.value = false;
     }
 
     function setNumber() {
