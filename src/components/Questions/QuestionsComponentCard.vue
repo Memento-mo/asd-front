@@ -164,11 +164,11 @@ export default defineComponent({
 
       const answer: string = form.answer;
 
-      numberQuestion.value++;
-      setNumber();
-
       fetchSendAnswer(currentQuestion.value, answer)
         .then(async () => {
+          numberQuestion.value++;
+          setNumber();
+
           if (numberQuestion.value === questions.value.length - 1) return;
 
           await fetchUserAnswers();
