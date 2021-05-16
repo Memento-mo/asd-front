@@ -1,16 +1,16 @@
 <template>
-  <div class="card" @click="handleTo">
-    <div class="card-image">
-      <div class="card-loading" v-if="!base64Image" v-loading="true" />
+  <div class="card-s" @click="handleTo">
+    <div class="card-s-image">
+      <div class="card-s-loading" v-if="!base64Image" v-loading="true" />
 
       <img :src="base64Image" v-else />
     </div>
 
-    <div class="card-body">
-      <div class="card-body__header">
+    <div class="card-s-body">
+      <div class="card-s-body__header">
         <h3>{{ account.full_name }}</h3>
       </div>
-      <p class="card-body__text">
+      <p class="card-s-body__text">
         Ответил на {{ account.count }}/{{ questions.length }} вопросов
       </p>
     </div>
@@ -72,7 +72,7 @@ export default defineComponent({
 </script>
 
 <style lang="stylus">
-.card {
+.card-s {
   width 100%
   max-width 35rem
   border-radius 2rem
