@@ -225,6 +225,10 @@ export default defineComponent({
           email: form.email,
           isAgree: form.isAgree.length > 0,
           avatar: fileBase64,
+          timeout: {
+            id: "0",
+            time: new Date().getTime()
+          }
         })
           .then(async () => {
             await fetchUser();

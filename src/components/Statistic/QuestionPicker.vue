@@ -1,6 +1,10 @@
 <template>
   <div
-    :class="[$style['picker'], $style[isDisabled ? 'disabled' : '']]"
+    :class="[
+      $style['picker'],
+      $style[isDisabled ? 'disabled' : ''],
+      $style[isSkiped ? 'skip' : ''],
+    ]"
     @click="handlerOpenQuestion"
   >
     {{ questionNumber }}
@@ -8,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({
   props: {
@@ -24,6 +28,10 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    isSkiped: {
+      type: Boolean,
+      required: true,
+    }
   },
   setup(props, { emit }) {
     function handlerOpenQuestion() {
@@ -63,6 +71,15 @@ export default defineComponent({
   &:hover {
     cursor default
     background-color rgba(240, 243, 244, 1)
+  }
+}
+
+.skip {
+  background rgba(244,67,54, .5)
+  color #fff
+
+  &:hover {
+    background rgba(244,67,54, .5)
   }
 }
 </style>

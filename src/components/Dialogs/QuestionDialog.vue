@@ -19,7 +19,7 @@
       >
         <div :class="$style.title">Изображение:</div>
         <div>
-          <div class="card-loading" v-if="!imageAnswer" v-loading="true" />
+          <div class="card-s-loading" v-if="!imageAnswer" v-loading="true" />
 
           <img :src="imageAnswer" v-else />
         </div>
@@ -64,9 +64,9 @@ export default defineComponent({
         props.question.id
       );
 
-      const image = await getLinkImg(answer.image);
+      const image = await getLinkImg(answer.image ? answer.image : "");
 
-      const updatedAnswer = { text: answer.text, image };
+      const updatedAnswer = { text: answer.text ? answer.text : "", image };
 
       userAnswer.value = updatedAnswer;
     }

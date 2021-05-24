@@ -20,6 +20,7 @@
               :question="question"
               :questionNumber="index + 1"
               :isDisabled="!isExistAnswer(question.id)"
+              :isSkiped="isSkiped(question.id)"
               v-for="(question, index) in questions"
               @handler-set-question="setVisibleQuestion"
             />
@@ -79,11 +80,31 @@ export default defineComponent({
     }
 
     function isExistAnswer(id: string) {
-      const index = userAnswers.value.findIndex(
-        (answer) => String(answer.question_id) === String(id)
-      );
+      let isExist = false;
 
-      return index !== -1;
+      userAnswers.value.forEach((answer) => {
+        if (answer.question_id === id) {
+          if (answer.text) {
+            isExist = true;
+          }
+        }
+      });
+
+      return isExist;
+    }
+
+    function isSkiped(id: string) {
+      let isSkiped = false;
+
+      userAnswers.value.forEach((answer) => {
+        if (answer.question_id === id) {
+          if (!answer.text) {
+            isSkiped = true;
+          }
+        }
+      });
+
+      return isSkiped;
     }
 
     function fetchUserAnswers() {
@@ -125,6 +146,7 @@ export default defineComponent({
       isVisibleDialog,
       isExistAnswer,
       base64Image,
+      isSkiped,
     };
   },
 });

@@ -5,4 +5,8 @@ export interface User {
   isAgree: boolean;
   count?: number;
   id?: string;
+  timeout: {
+    id: string;
+    time: number;
+  }
 }

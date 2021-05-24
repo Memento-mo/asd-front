@@ -42,7 +42,7 @@ export default {
   getters: {
     accounts: ({ accounts }: State): Array<User> => accounts,
     account: ({ accounts }: State) => (id: string): User | undefined =>
-      accounts.find((account) => account.email === id),
+      accounts.find((account) => account.id === id),
     user: ({ account }: State): User | null => account,
     token: ({ token }: State): string | null => token,
   },
@@ -79,6 +79,17 @@ export default {
     },
     fetchLogout: ({ commit }: VuexControl<State>): void => {
       commit("CLEAR_ACCOUNT");
+    },
+    fetchUpdateUserTime: ({ commit }: any, id: string): Promise<void> => {
+      const time = new Date().getTime();
+
+      return http.put(`/api/user/`, {
+        time,
+        id,
+      });
+    },
+    fetchUserTime: (_: any): Promise<void> => {
+      return http.get("/api/users/time");
     },
     setToken: ({ commit }: VuexControl<State>): boolean => {
       const token = localStorage.getItem("token");

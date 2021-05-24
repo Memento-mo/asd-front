@@ -60,7 +60,11 @@
         Отправить
       </ElButton>
 
-      <div :class="$style.logout">
+      <div :class="[$style.button, $style['button-skip']]">
+        <button @click="handlerSkipQuestion">Пропустить</button>
+      </div>
+
+      <div :class="$style.button">
         <button @click="logout">Выйти</button>
       </div>
     </ElForm>
@@ -120,6 +124,8 @@ export default defineComponent({
 
     const currentQuestion: Ref<Question> = ref({ id: "", text: "" });
 
+    const user = computed(() => store.getters["accounts/user"]);
+
     const isValid = computed(() => {
       return uploadedPhotos.value.length > 0 && form.answer.length > 0;
     });
@@ -131,23 +137,35 @@ export default defineComponent({
       }
     );
 
-    async function fetchSendAnswer(question: Question, answer: string) {
-      if (uploadedPhotos.value.length === 0) {
-        ElNotification({
-          title: "Нельзя",
-          type: "error",
-          message: "Фото обязательно",
-        });
+    async function fetchSendAnswer(
+      question: Question,
+      answer: string,
+      isSkip?: boolean
+    ) {
+      if (!isSkip) {
+        if (uploadedPhotos.value.length === 0) {
+          ElNotification({
+            title: "Нельзя",
+            type: "error",
+            message: "Фото обязательно",
+          });
 
-        throw new Error();
+          throw new Error();
+        }
+        const fileBase64 = await toBase64(uploadedPhotos.value[0].dataUrl);
+
+        return store.dispatch("answers/fetchSendAnswer", {
+          question_id: question.id,
+          text: answer,
+          image: fileBase64,
+        } as Answer);
+      } else {
+        return store.dispatch("answers/fetchSendAnswer", {
+          question_id: question.id,
+          text: null,
+          image: null,
+        } as Answer);
       }
-      const fileBase64 = await toBase64(uploadedPhotos.value[0].dataUrl);
-
-      return store.dispatch("answers/fetchSendAnswer", {
-        question_id: question.id,
-        text: answer,
-        image: fileBase64,
-      } as Answer);
     }
 
     function handleRemovePhoto() {
@@ -220,8 +238,13 @@ export default defineComponent({
       if (index > -1) {
         numberQuestion.value++;
       } else {
-        currentQuestion.value = questions.value[numberQuestion.value];
+        fetchUpdateUserTime(question.id);
+        currentQuestion.value = question;
       }
+    }
+
+    function fetchUpdateUserTime(id: string) {
+      store.dispatch("accounts/fetchUpdateUserTime", id);
     }
 
     function fetchLogout() {
@@ -265,6 +288,49 @@ export default defineComponent({
       }
     }
 
+    function handlerSkipQuestion(e: Event) {
+      e.preventDefault();
+      checkIsDisabled();
+    }
+
+    function fetchUserTime() {
+      return store.dispatch("accounts/fetchUserTime");
+    }
+
+    async function checkIsDisabled() {
+      const time = new Date().getTime();
+      const { data }: { data: { time: number } } = await fetchUserTime();
+
+      const isSkip = data.time + 15 * 60000 < time;
+
+      if (!isSkip) {
+        ElNotification({
+          type: "error",
+          title: "Пропустить пока нельзя",
+          message: "Попробуй ответить",
+        });
+      } else {
+        isLoadingQuestions.value = true;
+
+        fetchSendAnswer(currentQuestion.value, "", true).then(async () => {
+          numberQuestion.value++;
+          setNumber();
+
+          isLoadingQuestions.value = false;
+
+          if (numberQuestion.value === questions.value.length - 1) return;
+
+          await fetchUserAnswers();
+
+          ElNotification({
+            type: "success",
+            title: "Пропущено",
+            message: "Ты пропустил вопрос, постарайся в следующий раз ответить",
+          });
+        });
+      }
+    }
+
     async function init() {
       isLoadingQuestions.value = true;
       await fetchUserAnswers();
@@ -283,6 +349,7 @@ export default defineComponent({
       form,
       handlerSendAnswer,
       handleRemovePhoto,
+      handlerSkipQuestion,
       currentQuestion,
       uploadedPhotos,
       logout,
@@ -306,7 +373,7 @@ export default defineComponent({
   }
 }
 
-.logout {
+.button {
   button {
     color var(--secondary)
     background #fff
@@ -320,6 +387,13 @@ export default defineComponent({
 
     &:hover {
       opacity 0.7
+    }
+  }
+
+  &-skip {
+    button {
+      margin-bottom 10px
+      color var(--primary)
     }
   }
 }

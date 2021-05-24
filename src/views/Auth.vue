@@ -1,15 +1,15 @@
 <template>
-  <AuthComponentCard />
+  <AuthCard />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core";
 
-import AuthComponentCard from "../components/Auth/AuthComponentCard.vue";
+import AuthCard from "../components/Auth/AuthCard.vue";
 
 export default defineComponent({
   components: {
-    AuthComponentCard,
+    AuthCard,
   },
   setup() {
     return {};

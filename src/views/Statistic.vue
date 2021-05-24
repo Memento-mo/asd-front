@@ -13,7 +13,7 @@
     <div :class="$style['container-cards']">
       <Card
         :key="index"
-        :userId="account.email"
+        :userId="account.id"
         :account="account"
         v-for="(account, index) in filterAccounts"
       />

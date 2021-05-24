@@ -31,11 +31,18 @@ export default {
   actions: {
     fetchQuestions: ({ commit }: VuexControl<State>): Promise<void> => {
       return http.get("/api/questions").then(({ data }) => {
-        commit("SET_QUESTIONS", data.questions);
+        const questions = data.questions.sort((a: Question, b: Question) => {
+          return Number(a.id) > Number(b.id) ? 0 : -1;
+        });
+
+        commit("SET_QUESTIONS", questions);
       });
     },
     setNumber: ({ commit }: VuexControl<State>, newNumber: number): void => {
       commit("SET_NUMBER", newNumber);
     },
+    // fetchQuestion: () => {
+    //   http.post('/api/questions')
+    // }
   },
 };
